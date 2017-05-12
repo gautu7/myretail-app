@@ -1,0 +1,6 @@
+use target
+db.product.insert({ "productId" : "15117729", "currentPrice" : { "value" : 123.23, "currency_code" : "USD" } })
+db.product.insert({ "productId" : "13860428", "currentPrice" : { "value" : 30.00, "currency_code" : "USD" } })
+
+
+
