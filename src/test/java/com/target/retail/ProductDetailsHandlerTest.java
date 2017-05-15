@@ -18,13 +18,13 @@ import com.target.myretail.dao.object.CurrentPrice;
 import com.target.myretail.dao.object.Product;
 import com.target.myretail.exception.RetailServiceException;
 import com.target.myretail.product.handler.ProductDetailsHandler;
-import com.target.myretail.util.RetailServiceUtil;
+import com.target.myretail.util.RetailRequestValidator;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductDetailsHandlerTest {
 
 	@Mock
-	private RetailServiceUtil retailServiceUtil;
+	private RetailRequestValidator retailRequestValidator;
 
 	@Mock
 	private ProductPriceDaoImpl productPriceDaoImpl;
@@ -44,7 +44,7 @@ public class ProductDetailsHandlerTest {
 		currentPrice.setCurrency_code("USD");
 		product.setCurrentPrice(currentPrice);
 		
-		Mockito.when(retailServiceUtil.isValid(Matchers.anyString())).thenReturn(true);
+		Mockito.when(retailRequestValidator.isValid(Matchers.anyString())).thenReturn(true);
 		Mockito.when(redskyClient.getProductName(Matchers.anyString())).thenReturn(new String());
 		Mockito.when(productPriceDaoImpl.getCurrentPrice(Matchers.anyString())).thenReturn(product);
 		Mockito.when(productPriceDaoImpl.updateCurrentPrice(Matchers.any(ProductDetails.class))).thenReturn(new String());
@@ -62,13 +62,13 @@ public class ProductDetailsHandlerTest {
 	
 	@Test(expected = RetailServiceException.class)
 	public void testUpdateProductDetails_RetailServiceException() throws RetailServiceException{
-		Mockito.when(retailServiceUtil.isValid(Matchers.anyString())).thenReturn(false);
+		Mockito.when(retailRequestValidator.isValid(Matchers.anyString())).thenReturn(false);
 		productDetailsHandler.updateProductDetails("13860428", new ProductDetails());
 	}
 	
 	@Test(expected = RetailServiceException.class)
 	public void testGetProductDetails_RetailServiceException() throws RetailServiceException {
-		Mockito.when(retailServiceUtil.isValid(Matchers.anyString())).thenReturn(false);
+		Mockito.when(retailRequestValidator.isValid(Matchers.anyString())).thenReturn(false);
 		productDetailsHandler.getProductDetails("13860428");
 	}
 

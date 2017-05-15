@@ -31,7 +31,7 @@ public class RetailServiceImpl implements IRetailService {
 	}
 
 	@Override
-	public String updateProductDetails(@PathVariable(RetailConstants.PRODUCT_ID) String productId, @RequestBody ProductDetails productDetails) throws RetailServiceException {
+	public ProductDetails updateProductDetails(@PathVariable(RetailConstants.PRODUCT_ID) String productId, @RequestBody ProductDetails productDetails) throws RetailServiceException {
 		LOG.info("updateProductDetails API");
 		return productDetailsHandler.updateProductDetails(productId, productDetails);
 	}

@@ -2,7 +2,6 @@ package com.target.retail;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import com.target.myretail.binder.CurrentPrice;
 import com.target.myretail.binder.ProductDetails;
 import com.target.myretail.exception.RetailServiceException;
 import com.target.myretail.service.IRetailService;
+import com.target.retail.constants.RetailTestConstants;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = RetailServiceApplication.class, loader = AnnotationConfigContextLoader.class)
@@ -25,11 +25,6 @@ public class RetailServiceTest {
 	@Autowired
 	IRetailService retailService;
 
-	@Before
-	public void setUp() {
-		
-	}
-
 	@Test
 	public void testGetProductDetails_ValidInput() throws RetailServiceException {
 		ProductDetails productDetails = retailService.getProductDetails("13860428");
@@ -38,46 +33,78 @@ public class RetailServiceTest {
 	
 	@Test(expected = RetailServiceException.class)
 	public void testGetProductDetails_InValid_ProductNotFound() throws RetailServiceException {
-		ProductDetails productDetails = retailService.getProductDetails("123456");
-		assertEquals("102", productDetails.getErrors().getErrorCode());
+		retailService.getProductDetails("123456");
 	}
 	
 	@Test(expected = RetailServiceException.class)
-	public void testGetProductDetails_InValid_IntegerInput() throws RetailServiceException {
-		ProductDetails productDetails = retailService.getProductDetails("S12345");
-		assertEquals("103",  productDetails.getErrors().getErrorCode());
+	public void testGetProductDetails_InValid_Integer_Input() throws RetailServiceException {
+		retailService.getProductDetails("S12345");
+	}
+	
+	@Test(expected = RetailServiceException.class)
+	public void testGetProductDetails_Special_Char_Input() throws RetailServiceException {
+		retailService.getProductDetails("@^*&!13860428");
 	}
 	
 	@Test
 	public void testUpdateProductDetails_ValidInput() throws RetailServiceException {
-		ProductDetails productDetails = setProductDetailsRequest("13860428");
-		String response = retailService.updateProductDetails("13860428", productDetails);
-		assertEquals("PRODUCT PRICE UPDATED SUCCESSFULLY", response);
+		CurrentPrice currPrice = new CurrentPrice();
+		currPrice.setValue("20.00");
+		currPrice.setCurrency_code("USD");
+		ProductDetails productDetails = setProductDetailsRequest("13860428",currPrice);
+		productDetails = retailService.updateProductDetails("13860428", productDetails);
+		assertEquals(RetailTestConstants.UPDATE_RESPONSE, productDetails.getUpdateStatus());
+	}
+	
+	@Test
+	public void testUpdateProductDetails_Valid_Decimal_Input() throws RetailServiceException {
+		CurrentPrice currPrice = new CurrentPrice();
+		currPrice.setValue("1234.16");
+		currPrice.setCurrency_code("USD");
+		ProductDetails productDetails = setProductDetailsRequest("13860428",currPrice);
+		productDetails = retailService.updateProductDetails("13860428", productDetails);
+		assertEquals(RetailTestConstants.UPDATE_RESPONSE, productDetails.getUpdateStatus());
 	}
 	
 	@Test(expected = RetailServiceException.class)
-	public void testUpdateProductDetails_InValid_IntegerInput() throws RetailServiceException {
-		ProductDetails productDetails = setProductDetailsRequest("S1DR60428");
-		String response = retailService.updateProductDetails("S1DR60428", productDetails);
-		
-		assertEquals("PRODUCT PRICE UPDATED SUCCESSFULLY", response);
+	public void testUpdateProductDetails_InValid_Integer_Input() throws RetailServiceException {
+		CurrentPrice currPrice = new CurrentPrice();
+		currPrice.setValue("20.00");
+		currPrice.setCurrency_code("USD");
+		ProductDetails productDetails = setProductDetailsRequest("S1DR60428",currPrice);
+		retailService.updateProductDetails("S1DR60428", productDetails);
+	}
+	
+	@Test(expected = RetailServiceException.class)
+	public void testUpdateProductDetails_Negative_Integer_Input() throws RetailServiceException {
+		CurrentPrice currPrice = new CurrentPrice();
+		currPrice.setValue("-10.00");
+		currPrice.setCurrency_code("USD");
+		ProductDetails productDetails = setProductDetailsRequest("13860428",currPrice);
+		retailService.updateProductDetails("13860428", productDetails);
 	}
 	
 	@Test(expected = RetailServiceException.class)
 	public void testUpdateProductDetails_InValid_ProductNotFound() throws RetailServiceException {
-		ProductDetails productDetails = setProductDetailsRequest("56789873");
-		String response = retailService.updateProductDetails("56789873", productDetails);
-		
-		assertEquals("PRODUCT PRICE UPDATED SUCCESSFULLY", response);
+		CurrentPrice currPrice = new CurrentPrice();
+		currPrice.setValue("20.00");
+		currPrice.setCurrency_code("USD");
+		ProductDetails productDetails = setProductDetailsRequest("15643793",currPrice);
+		retailService.updateProductDetails("56789873", productDetails);
 	}
 	
-	public ProductDetails setProductDetailsRequest(String productId){
+	@Test(expected = RetailServiceException.class)
+	public void testUpdateProductDetails_InValid_CurrencyCode() throws RetailServiceException {
+		CurrentPrice currPrice = new CurrentPrice();
+		currPrice.setValue("20.00");
+		currPrice.setCurrency_code("IND");
+		ProductDetails productDetails = setProductDetailsRequest("15643793",currPrice);
+		retailService.updateProductDetails("56789873", productDetails);
+	}
+	
+	public ProductDetails setProductDetailsRequest(String productId,CurrentPrice currentPrice){
 		
 		ProductDetails productDetails = new ProductDetails();
-		CurrentPrice currentPrice = new CurrentPrice();
-		currentPrice.setValue("20.00");
-		currentPrice.setCurrency_code("USD");
-		
 		productDetails.setId(productId);
 		productDetails.setName("The Big Lebowski (Blu-ray)");
 		productDetails.setCurrent_price(currentPrice);

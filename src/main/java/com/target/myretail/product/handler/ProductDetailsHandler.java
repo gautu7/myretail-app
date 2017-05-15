@@ -12,7 +12,7 @@ import com.target.myretail.dao.IProductPriceDao;
 import com.target.myretail.dao.object.Product;
 import com.target.myretail.exception.ErrorDetail;
 import com.target.myretail.exception.RetailServiceException;
-import com.target.myretail.util.RetailServiceUtil;
+import com.target.myretail.util.RetailRequestValidator;
 
 @Component
 public class ProductDetailsHandler {
@@ -20,7 +20,7 @@ public class ProductDetailsHandler {
 	private static final Logger LOG = Logger.getLogger(ProductDetailsHandler.class);
 
 	@Autowired
-	private RetailServiceUtil retailServiceUtil;
+	private RetailRequestValidator retailRequestValidator;
 	
 	@Autowired
 	private IProductPriceDao iProductPriceDao;
@@ -57,21 +57,24 @@ public class ProductDetailsHandler {
 	/*
 	 * Update Product Details
 	 */
-	public String updateProductDetails(String productId, ProductDetails productDetails) throws RetailServiceException {
+	public ProductDetails updateProductDetails(String productId, ProductDetails productDetails) throws RetailServiceException {
 
 		LOG.info("Price to be updated for Product" + productId);
-		String response = null;
+		ProductDetails productDetailsResponse = null;
 		if (validProductId(productId)) {
-			response = iProductPriceDao.updateCurrentPrice(productDetails);
+			retailRequestValidator.validateCurrentPrice(productDetails.getCurrent_price());
+			productDetailsResponse = new ProductDetails();
+			String response = iProductPriceDao.updateCurrentPrice(productDetails);
+			productDetailsResponse.setUpdateStatus(response);
 		}
-		return response;
+		return productDetailsResponse;
 	}
 	
 	/*
 	 * This method validates the ProductID
 	 */
 	private boolean validProductId(String productId) throws RetailServiceException {
-		if (retailServiceUtil.isValid(productId)) {
+		if (retailRequestValidator.isValid(productId)) {
 			return true;
 		} else {
 			throw new RetailServiceException(ErrorDetail.INVALID_PRODUCT_ID);

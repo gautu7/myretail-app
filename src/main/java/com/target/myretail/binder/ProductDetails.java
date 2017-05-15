@@ -11,7 +11,14 @@ public class ProductDetails {
 	private String name;
 	private CurrentPrice current_price;
 	private Error errors;
+	private String updateStatus;
 	
+	public String getUpdateStatus() {
+		return updateStatus;
+	}
+	public void setUpdateStatus(String updateStatus) {
+		this.updateStatus = updateStatus;
+	}
 	public Error getErrors() {
 		return errors;
 	}

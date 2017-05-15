@@ -1,6 +1,10 @@
 use target
 db.product.insert({ "productId" : "15117729", "currentPrice" : { "value" : 123.23, "currency_code" : "USD" } })
 db.product.insert({ "productId" : "13860428", "currentPrice" : { "value" : 30.00, "currency_code" : "USD" } })
-
+db.product.insert({ "productId" : "15117729", "currentPrice" : { "value" : 10.00, "currency_code" : "USD" } })
+db.product.insert({ "productId" : "16483589", "currentPrice" : { "value" : 100.00, "currency_code" : "USD" } })
+db.product.insert({ "productId" : "16696652", "currentPrice" : { "value" : 120.00, "currency_code" : "USD" } })
+db.product.insert({ "productId" : "16752456", "currentPrice" : { "value" : 350.10, "currency_code" : "USD" } })
+db.product.insert({ "productId" : "15643793", "currentPrice" : { "value" : 500.00, "currency_code" : "USD" } })
 
 

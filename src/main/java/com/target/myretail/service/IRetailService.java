@@ -24,7 +24,7 @@ public interface IRetailService {
 	@GetMapping(value = RetailConstants.GET_PRODUCT_DETAILS_URI, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ProductDetails getProductDetails(@PathVariable(RetailConstants.PRODUCT_ID) String productId) throws RetailServiceException;
 	
-	@PutMapping(value = RetailConstants.GET_PRODUCT_DETAILS_URI, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
-	public String updateProductDetails(@PathVariable(RetailConstants.PRODUCT_ID) String productId, @RequestBody ProductDetails productDetails) throws RetailServiceException;
+	@PutMapping(value = RetailConstants.GET_PRODUCT_DETAILS_URI, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ProductDetails updateProductDetails(@PathVariable(RetailConstants.PRODUCT_ID) String productId, @RequestBody ProductDetails productDetails) throws RetailServiceException;
 
 }
